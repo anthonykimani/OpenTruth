@@ -5,7 +5,7 @@ import {
 } from '@mysten/dapp-kit';
 import { formatSuiAddress } from '../lib/sui';
 import { Badge } from './ui/badge';
-
+import { SUI_RPC_URL } from '../config/seal-config';
 
 export function Navigation() {
   const location = useLocation();
@@ -83,21 +83,21 @@ export function Navigation() {
         <div className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-600">
             <Badge variant="outline" className="text-xs">
-              Walrus Testnet
+              Walrus Local {/* ✅ Changed from "Walrus Testnet" */}
             </Badge>
             <span>•</span>
-            <span>Sui Testnet</span>
+            <span>Sui Localnet</span> {/* ✅ Changed from "Sui Testnet" */}
           </div>
 
           {account && (
             <div className="flex items-center gap-4 text-xs text-gray-600">
               <a
-                href={`https://suiexplorer.com/address/${account.address}?network=testnet`}
+                href={`${SUI_RPC_URL}/address/${account.address}`} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-600 hover:underline"
               >
-                View on Explorer →
+                View on Local Explorer → {/* ✅ Changed text */}
               </a>
             </div>
           )}

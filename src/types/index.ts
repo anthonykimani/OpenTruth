@@ -66,7 +66,7 @@ export interface OpenTruthCertificate {
 
   storage: {
     walrusBlobId: string; // Points to either encrypted OR plaintext file
-    network: 'testnet' | 'mainnet';
+    network: 'testnet' | 'mainnet' | 'localnet';
     uploadedAt: number;
   };
 }

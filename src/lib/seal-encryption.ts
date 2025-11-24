@@ -11,51 +11,32 @@ import {
   type KeyServerConfig 
 } from '@mysten/seal';
 import { bcs } from '@mysten/sui/bcs';
+import { 
+  SEAL_PACKAGE_ID, 
+  KEY_SERVER_OBJECT_ID, 
+  SUI_RPC_URL 
+} from '../config/seal-config';
 import { SuiClient } from '@mysten/sui/client';
 import type { OpenTruthCertificate } from '../types';
 
 // ============================================================================
-// CONFIGURATION - CRITICAL: FILL THESE WITH REAL VALUES
+// CONFIGURATION
 // ============================================================================
 
 /**
- * Seal Package ID from Mysten Documentation
- * !!! REPLACE THIS with the actual published package ID !!!
- * https://docs.mystenlabs.com/seal
+ * Threshold for localnet key server
+ * Using 1 for single key server on localnet
  */
-const SEAL_PACKAGE_ID = '0x927a54e9ae803f82ebf480136a9bcff45101ccbe28b13f433c89f5181069d682';
+const DEFAULT_THRESHOLD = 1;
 
 /**
- * Key Server Object IDs - MUST BE FILLED
- * Get these from Mysten Seal docs. Need minimum 2 for threshold=2.
+ * Key server configuration for localnet
  */
-const TESTNET_KEY_SERVER_IDS: string[] = [
-  '0x73d05d62c18d9374e3ea529e8e0ed6161da1a141a94d3f76ae3fe4e99356db75', // mysten-testnet-1
-  '0xf5d14a81a982144ae441cd7d64b09027f116a468bd36e7eca494f750591623c8', // mysten-testnet-2
-];
-
-
-const DEFAULT_THRESHOLD = 2;
-
-// ============================================================================
-// KEY SERVER MANAGEMENT
-// ============================================================================
-
-/**
- * Get key server configurations for SealClient
- * Returns array of { objectId, weight } configs
- */
-export function getKeyServerConfigs(): KeyServerConfig[] {
-  if (TESTNET_KEY_SERVER_IDS.length < DEFAULT_THRESHOLD) {
-    throw new Error(
-      `⛔ Seal Setup Error: You must configure at least ${DEFAULT_THRESHOLD} key server object IDs ` +
-      `in TESTNET_KEY_SERVER_IDS. Get these from https://docs.mystenlabs.com/seal`
-    );
-  }
-  return TESTNET_KEY_SERVER_IDS.map((objectId: string) => ({
-    objectId,
+function getKeyServerConfig(): KeyServerConfig {
+  return {
+    objectId: KEY_SERVER_OBJECT_ID,
     weight: 1,
-  }));
+  };
 }
 
 // ============================================================================
@@ -82,12 +63,19 @@ export async function encryptFileWithSeal(
     if (!ownerAddress?.startsWith('0x')) throw new Error('Invalid owner address');
 
     const data = new Uint8Array(await file.arrayBuffer());
-    const keyId = `${ownerAddress}::${Date.now()}`;
+    
+    // ✅ FIXED: Generate a valid 32-byte hex key ID from timestamp
+    const timestamp = Date.now();
+    const keyIdBuffer = new Uint8Array(32);
+    // Fill first 8 bytes with timestamp (Big-endian)
+    new DataView(keyIdBuffer.buffer).setBigUint64(0, BigInt(timestamp), false);
+    // Convert to hex string
+    const keyId = '0x' + Array.from(keyIdBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
 
     const sealClient = new SealClient({
       suiClient: suiClient as any, // Type assertion for compatibility
-      serverConfigs: getKeyServerConfigs(),
-      verifyKeyServers: true,
+      serverConfigs: [getKeyServerConfig()],
+      verifyKeyServers: false,
     });
 
     const { encryptedObject } = await sealClient.encrypt({
@@ -138,8 +126,8 @@ export async function decryptFileWithSeal(
 
     const sealClient = new SealClient({
       suiClient: suiClient as any, // Type assertion for compatibility
-      serverConfigs: getKeyServerConfigs(),
-      verifyKeyServers: true,
+      serverConfigs: [getKeyServerConfig()],
+      verifyKeyServers: false, // Localnet only
     });
 
     // Use static factory method to create SessionKey

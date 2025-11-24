@@ -4,7 +4,6 @@ import type { OpenTruthCertificate } from "../types";
 import { completeCertificate, generateCertificate } from "../lib/certificate";
 import { signCertificate } from "../lib/sui";
 import { getWalrusExplorerUrl, uploadCertificate, uploadToWalrus } from "../lib/walrus";
-import { saveCertificate } from "../lib/storage";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { CertificateDisplay } from "./CertificateDisplay";
@@ -97,8 +96,8 @@ export function UploadForm() {
           },
         },
         {
-          walrusBlobId: fileUpload.blobId, // Encrypted file
-          network: "testnet",
+          walrusBlobId: fileUpload.blobId, 
+          network: "localnet", 
           uploadedAt: fileUpload.uploadedAt,
         }
       );

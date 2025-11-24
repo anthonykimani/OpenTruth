@@ -98,8 +98,7 @@ export function DatasetUpload() {
         },
         {
           walrusBlobId: '',
- // Will be set after upload
-          network: 'testnet',
+          network: 'localnet', // ✅ Changed from "testnet" to "localnet"
           uploadedAt: Date.now(),
         }
       );
