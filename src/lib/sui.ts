@@ -41,7 +41,7 @@ export async function signCertificate(
 export async function verifyCertificateSignature(
   certificate: OpenTruthCertificate,
   signature: string,
-  publicKey: string
+  _publicKey: string
 ): Promise<boolean> {
   try {
     // Remove proofs and storage before verifying (same as signing)

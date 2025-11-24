@@ -1,4 +1,4 @@
-import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';
+import { SuiClient } from '@mysten/sui.js/client';
 import { SealClient } from '@mysten/seal';
 
 export const SEAL_PACKAGE_ID = import.meta.env.VITE_SEAL_PACKAGE_ID;

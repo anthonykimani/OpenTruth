@@ -4,7 +4,7 @@ import { decryptFileWithSeal } from '../lib/seal-encryption';
 import { bcs } from '@mysten/sui/bcs';
 import { Button } from './ui/button';
 import type { OpenTruthCertificate } from '../types';
-import { KEY_SERVER_OBJECT_ID, SEAL_PACKAGE_ID, SUI_RPC_URL } from '../config/seal-config';
+import { SUI_RPC_URL } from '../config/seal-config';
 import { SuiClient } from '@mysten/sui/client';
 
 export function DecryptButton({ 

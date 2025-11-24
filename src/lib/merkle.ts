@@ -24,14 +24,14 @@ export async function buildMerkleTree(
     const leaves = cleanHashes.map((h) => Buffer.from(h, "hex"));
 
     // Define hash function using Web Crypto API
-    const hashFn = async (data: Buffer): Promise<Buffer> => {
+     async (data: Buffer): Promise<Buffer> => {
       const uint8Array = new Uint8Array(data);
       const hashBuffer = await crypto.subtle.digest("SHA-256", uint8Array);
       return Buffer.from(hashBuffer);
     };
 
     // Build tree synchronously with pre-computed leaves
-    const tree = new MerkleTree(leaves, (data: Buffer) => {
+    const tree = new MerkleTree(leaves, (_data: Buffer) => {
       // Synchronous wrapper - we'll compute hashes in advance
       throw new Error("Use async version");
     }, { sortPairs: true });
@@ -78,7 +78,7 @@ export function verifyMerkleProof(
       return Buffer.from(clean, "hex");
     });
 
-    return MerkleTree.verify(proofBuffers, leaf, rootBuffer, (data: Buffer) => {
+    return MerkleTree.verify(proofBuffers, leaf, rootBuffer, (_data: Buffer) => {
       throw new Error("Synchronous verification not supported");
     });
   } catch (error) {

@@ -73,7 +73,7 @@ export interface CheckpointEncryptionResult {
  */
 export async function encryptCheckpoint(
   checkpoint: TrainingCheckpoint,
-  ownerAddress: string,
+  _ownerAddress: string,
   client: SuiClient
 ): Promise<CheckpointEncryptionResult> {
   try {
@@ -132,7 +132,7 @@ export async function decryptCheckpoint(
   const { encryptedData, keyId, ownerAddress, signMessage, client } = params;
 
   try {
-    const encryptedObject = EncryptedObject.parse(encryptedData);
+   EncryptedObject.parse(encryptedData);
 
     // Initialize SealClient
     const sealClient = new SealClient({

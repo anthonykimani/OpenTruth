@@ -13,8 +13,7 @@ import {
 import { bcs } from '@mysten/sui/bcs';
 import { 
   SEAL_PACKAGE_ID, 
-  KEY_SERVER_OBJECT_ID, 
-  SUI_RPC_URL 
+  KEY_SERVER_OBJECT_ID 
 } from '../config/seal-config';
 import { SuiClient } from '@mysten/sui/client';
 import type { OpenTruthCertificate } from '../types';
